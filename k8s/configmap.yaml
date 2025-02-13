@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: player-app-config
+  namespace: player-app
+data:
+  SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/cicd
+  SPRING_DATASOURCE_USERNAME: postgres
+  SPRING_DATASOURCE_PASSWORD: postgres

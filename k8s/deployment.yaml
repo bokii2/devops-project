@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: player-app
+  namespace: player-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: player-app
+  template:
+    metadata:
+      labels:
+        app: player-app
+    spec:
+      containers:
+      - name: player-app
+        image: bokiipop/player-app:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: player-app-config
+        - secretRef:
+            name: app-secret

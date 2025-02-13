@@ -1,32 +1,31 @@
-version: '3.8'
-
+version: '3'
 services:
-  player-app:
+  app:
     image: player-app:latest
-    container_name: player_app
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://player_db:5432/cicd
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
     ports:
-      - "8081:8080"
+      - "8080:8080"
     depends_on:
-      - postgres
-
-  postgres:
-    image: postgres
-    container_name: player_db
+      db:
+        condition: service_healthy
     environment:
-      POSTGRES_DB: cicd
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/cicd
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=cicd
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     volumes:
-      - postgres_db:/var/lib/postgresql/data
-      - ./schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
-      - ./data.sql:/docker-entrypoint-initdb.d/02_data.sql
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
 volumes:
-  postgres_db:
-
+  db-data:

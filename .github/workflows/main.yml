@@ -1,4 +1,4 @@
-name: Build, Test, Secure, Analyze, and Dockerize
+name: Build&Test
 
 on:
   push:
